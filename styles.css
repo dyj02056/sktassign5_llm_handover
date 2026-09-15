@@ -116,6 +116,13 @@ input[type=color] {
 }
 input[type=range] { width: 100%; accent-color: var(--accent); }
 
+/* [FILTER] 필터 컨트롤 영역 간격 조정 */
+.filter-controls label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .row { display: flex; gap: 8px; align-items: center; }
 .row > * { flex: 1; }
 .val {

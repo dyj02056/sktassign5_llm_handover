@@ -32,6 +32,19 @@
       <div class="txt-pos-label" id="imgInfo">
         이미지를 불러오세요 (드래그&드롭 가능)
       </div>
+
+      <!-- [FILTER] 이미지 필터 슬라이더 컨트롤 영역 시작 -->
+      <div class="filter-controls" style="margin-top: 12px;">
+        <label>밝기 <span class="badge" id="filterBrightnessVal">100%</span></label>
+        <input type="range" id="filterBrightness" min="0" max="200" value="100">
+
+        <label style="margin-top: 6px;">대비 <span class="badge" id="filterContrastVal">100%</span></label>
+        <input type="range" id="filterContrast" min="0" max="200" value="100">
+
+        <label style="margin-top: 6px;">채도 <span class="badge" id="filterSaturateVal">100%</span></label>
+        <input type="range" id="filterSaturate" min="0" max="200" value="100">
+      </div>
+      <!-- [FILTER] 이미지 필터 슬라이더 컨트롤 영역 끝 -->
     </div>
 
     <div class="section">

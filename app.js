@@ -31,6 +31,12 @@ const state = {
   },
   image: null,
   imageName: "",
+  // [FILTER] 이미지 필터 상태값 추가
+  filters: {
+    brightness: 100,
+    contrast: 100,
+    saturate: 100
+  },
   text: {
     content: "안녕하세요 😀",
     size: 48,
@@ -141,8 +147,12 @@ function render() {
     const r = computeImageRect(
       state.image.naturalWidth, state.image.naturalHeight, W, H);
     try {
+      // [FILTER] 캔버스 필터 적용 (밝기, 대비, 채도)
+      ctx.filter = `brightness(${state.filters.brightness}%) contrast(${state.filters.contrast}%) saturate(${state.filters.saturate}%)`;
       ctx.drawImage(state.image, r.x, r.y, r.w, r.h);
+      ctx.filter = "none"; // [FILTER] 텍스트 등에 영향주지 않도록 필터 리셋
     } catch (e) {
+      ctx.filter = "none"; // [FILTER] 에러 시 리셋
       ctx.fillStyle = state.bgColor;
       ctx.fillRect(0, 0, W, H);
     }
@@ -585,6 +595,23 @@ function bind() {
   $("fileImage").onchange = e => {
     if (e.target.files[0]) handleImageFile(e.target.files[0]);
     e.target.value = "";
+  };
+
+  // [FILTER] 밝기, 대비, 채도 슬라이더 이벤트 바인딩
+  $("filterBrightness").oninput = e => {
+    state.filters.brightness = +e.target.value;
+    $("filterBrightnessVal").textContent = e.target.value + "%";
+    render();
+  };
+  $("filterContrast").oninput = e => {
+    state.filters.contrast = +e.target.value;
+    $("filterContrastVal").textContent = e.target.value + "%";
+    render();
+  };
+  $("filterSaturate").oninput = e => {
+    state.filters.saturate = +e.target.value;
+    $("filterSaturateVal").textContent = e.target.value + "%";
+    render();
   };
 
   stage.addEventListener("dragover", e => e.preventDefault());
