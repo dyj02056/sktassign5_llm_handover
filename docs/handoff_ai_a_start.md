@@ -8,12 +8,14 @@
 | 모델 표시 ID | 3.6 Flash |
 | 인터페이스 | 웹 채팅 |
 | 세션 역할 | AI A (앞부분 구현) |
-| 시작 시각 | (AI A 시작 시 기록) |
-| 종료 시각 | (AI A 종료 시 기록) |
-| 실제 소요 시간 | (AI A 종료 시 기록) |
+| 시작 시각 | 2026-09-15 15:41 |
+| 종료 시각 | 2026-09-15 16:00 |
+| 실제 소요 시간 | 약 19분 |
 | 시간 상한 | 1시간 (권장 가이드) |
 | 요청 상한 | 8턴 (강제) |
-| 실제 사용 턴 수 | (AI A 종료 시 기록) |
+| 실제 사용 턴 수 | 1턴 |
+| AI A commit hash | 805b5c4e5aee92cf945ea268ada8a0f69c62f9b7 |
+| AI A commit URL | https://github.com/dyj02056/sktassign5_llm_handover/commit/805b5c4e5aee92cf945ea268ada8a0f69c62f9b7 |
 
 ## 2. 소스
 
