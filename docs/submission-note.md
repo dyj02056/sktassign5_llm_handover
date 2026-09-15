@@ -101,3 +101,154 @@
 AI A에게 줄 최초 요청을 확정했다. "다음 세션"이라는 표현이 AI A에게 모호할 수 있어 "다음 작업자"로 바꾸고, "이 대화를 보지 못한 상태에서"를 추가했다.
 
 ### 3.3 파일 구조 확정
+sktassign5_llm_handover/
+├── index.html
+├── styles.css
+├── app.js
+├── README.md
+├── evidence/
+└── docs/
+├── handoff_ai_a_start.md
+├── handoff_between.md
+├── handoff_ai_b_end.md
+├── ai_b_feature_summary.md
+├── submission-note.md
+└── submission-checklist.md
+
+
+---
+
+## 4. 카드 2 — AI A의 작업을 멈추기
+
+### 4.1 AI A 세션
+
+| 항목 | 값 |
+|---|---|
+| 시작 시각 | 2026-09-15 15:41 |
+| 종료 시각 | 2026-09-15 16:00 |
+| 소요 시간 | 약 19분 |
+| 사용 턴 수 | 1턴 |
+| commit | `805b5c4e5aee92cf945ea268ada8a0f69c62f9b7` |
+
+### 4.2 AI A 입출력 방식
+
+- **입력**: 파일 3개 업로드 + 최초 요청 텍스트
+- **출력**: 전체 파일 3개 출력 + 수정 부분 `// [FILTER]` 주석
+- **인수인계 문서**: 작업 완료 후 별도 턴에서 요청하기로 했으나, AI A가 자발적으로 `HANDOVER.md`를 첫 응답에 포함
+
+### 4.3 검사 F01~F05 실행
+
+사용자가 로컬 브라우저에서 직접 검사. **5/5 전부 통과**.
+
+---
+
+## 5. 카드 3 — 인수인계 문서 7항목
+
+### 5.1 AI A의 HANDOVER.md 문제
+
+AI A가 자발적으로 작성한 `HANDOVER.md`는 7항목 중 3개만 충족했다:
+- ✅ 다음 시도
+- ✅ 실행 명령
+- ✅ 주의사항
+- ❌ 목적
+- ❌ 현재 버전 ID
+- ❌ 검사 결과
+- ❌ 실패 원인
+
+### 5.2 해결: handoff_between.md 재구성
+
+AI A의 `HANDOVER.md`를 기반으로, 우리가 정한 7항목 형식으로 `docs/handoff_between.md`를 재구성했다. `submission-note.md`의 "AI 말을 안 들은 일"에 이 결정을 기록했다.
+
+### 5.3 AI B에게 검사 10개 정의 제공
+
+AI B가 "같은 검사 10개"를 실행하려면 검사 정의가 필요하므로, `handoff_between.md` 섹션 3을 "검사 결과"에서 "고정 검사 10개 및 결과"로 확장했다.
+
+---
+
+## 6. 카드 4 — 새 대화가 이어받기
+
+### 6.1 AI B 입력 방식
+
+AI B(Manus)는 파일을 1개씩만 받을 수 있었다. 그래서:
+- 첫 메시지에 `handoff_between.md` 업로드
+- 이후 `index.html`, `app.js`, `styles.css`를 순서대로 업로드
+- **총 4턴을 파일 업로드에 소모**
+
+### 6.2 AI B 세션
+
+| 항목 | 값 |
+|---|---|
+| 시작 시각 | 2026-09-15 16:45 |
+| 종료 시각 | 2026-09-15 16:56 |
+| 소요 시간 | 약 11분 |
+| 사용 턴 수 | 5턴 |
+| commit | `fa868795767a93fd0bd91055902ef67e711793b2` |
+
+### 6.3 AI B 작업 결과
+
+- 흑백·세피아 체크박스 추가
+- `getFilterString()` 함수로 필터 문자열 통합
+- 다운로드 시 오프스크린 캔버스에 동일 필터 적용
+- 밝기·대비·채도 0~200 범위 클램핑
+- `node --check`로 문법 검사
+
+### 6.4 검사 F06~F10 실행
+
+사용자가 로컬 브라우저에서 직접 검사. **5/5 전부 통과**.
+
+### 6.5 AI B 추가 문서
+
+AI B가 작업 완료 후 `ai_b_feature_summary.md`를 작성했다.
+
+---
+
+## 7. 카드 5 — 인수 결과 정리
+
+### 7.1 최종 검사 결과
+
+**10/10 통과**
+
+### 7.2 작성한 문서
+
+| 문서 | 내용 |
+|---|---|
+| `README.md` | 프로젝트 개요, 확인 방법 4줄, AI A/B 비교, 검사 결과 |
+| `docs/submission-checklist.md` | 제출 요건, 완주 체크리스트 (T05-C01~C24, C39, C50~C53) |
+| `docs/submission-note.md` | 이 문서 |
+
+### 7.3 배포
+
+- 배포 URL: https://sktassign5-llm-handover.vercel.app/
+- 시크릿 창에서 무로그인 접근 확인
+
+---
+
+## 8. 발생한 문제와 해결
+
+| 문제 | 해결 |
+|---|---|
+| AI B를 Mistral에서 Manus로 변경 | Manus가 무료·웹 채팅·턴 수 측정 가능·저장소 직접 접근 불가 확인 후 변경 |
+| Manus가 파일을 1개씩만 받음 | 파일 업로드에 4턴 소모, 턴 상한(8턴) 내에서 해결 |
+| AI A가 자발적으로 HANDOVER.md 작성 | 7항목 중 3개만 충족 → 우리가 7항목 형식으로 재구성 |
+| AI B에게 검사 10개 정의 필요 | `handoff_between.md` 섹션 3 확장 |
+| "다음 세션" 표현이 AI A에게 모호 | "다음 작업자" + "이 대화를 보지 못한 상태에서"로 수정 |
+
+---
+
+## 9. 최종 산출물
+
+| 항목 | URL |
+|---|---|
+| 배포 (앱) | https://sktassign5-llm-handover.vercel.app/ |
+| 소스 저장소 | https://github.com/dyj02056/sktassign5_llm_handover |
+| 최종 commit | https://github.com/dyj02056/sktassign5_llm_handover/commit/fa868795767a93fd0bd91055902ef67e711793b2 |
+| AI A commit | https://github.com/dyj02056/sktassign5_llm_handover/commit/805b5c4e5aee92cf945ea268ada8a0f69c62f9b7 |
+| 시작 commit | https://github.com/dyj02056/sktassign5_llm_handover/commit/1e92f89cc951e5417bcb818faa61af70d461fda3 |
+
+---
+
+## 10. AI와 내 판단 3줄
+
+1. **AI에게 맡긴 일**: 이미지 필터 기능 구현 (AI A: 밝기·대비·채도, AI B: 흑백·세피아·다운로드 반영·경계값)
+2. **내가 판단한 일**: 검사 10개 고정, AI A/B 역할 분할, 공통 턴 상한(8턴) 결정, 인수인계 문서 형식 확정, AI B 모델 선택(Manus)
+3. **AI 말을 안 들은 일**: AI A가 자발적으로 작성한 `HANDOVER.md`를 그대로 쓰지 않고, 우리가 정한 7항목 형식(`handoff_between.md`)으로 재구성했다.
