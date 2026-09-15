@@ -122,6 +122,16 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
   justify-content: space-between;
   align-items: center;
 }
+/* [FILTER] 체크박스 필터 컨트롤 스타일 */
+.filter-controls .filter-check {
+  cursor: pointer;
+}
+.filter-controls .filter-check input[type=checkbox] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
 
 .row { display: flex; gap: 8px; align-items: center; }
 .row > * { flex: 1; }

@@ -35,7 +35,10 @@ const state = {
   filters: {
     brightness: 100,
     contrast: 100,
-    saturate: 100
+    saturate: 100,
+    // [FILTER] 흑백·세피아 토글 상태
+    grayscale: false,
+    sepia: false
   },
   text: {
     content: "안녕하세요 😀",
@@ -84,6 +87,21 @@ function computeImageRect(iw, ih, dw, dh) {
   const s = Math.max(dw / iw, dh / ih);
   const w = iw * s, h = ih * s;
   return { x: (dw - w) / 2, y: (dh - h) / 2, w, h };
+}
+
+// [FILTER] 모든 렌더링 경로에서 동일하게 사용하는 CSS 필터 문자열
+function getFilterString() {
+  const f = state.filters;
+  const brightness = Number.isFinite(+f.brightness) ? Math.max(0, Math.min(200, +f.brightness)) : 100;
+  const contrast = Number.isFinite(+f.contrast) ? Math.max(0, Math.min(200, +f.contrast)) : 100;
+  const saturate = Number.isFinite(+f.saturate) ? Math.max(0, Math.min(200, +f.saturate)) : 100;
+  return [
+    `brightness(${brightness}%)`,
+    `contrast(${contrast}%)`,
+    `saturate(${saturate}%)`,
+    `grayscale(${f.grayscale ? 100 : 0}%)`,
+    `sepia(${f.sepia ? 100 : 0}%)`
+  ].join(" ");
 }
 
 /* 컨텍스트 인자 방식 (T03-C11~13, C22) */
@@ -147,8 +165,8 @@ function render() {
     const r = computeImageRect(
       state.image.naturalWidth, state.image.naturalHeight, W, H);
     try {
-      // [FILTER] 캔버스 필터 적용 (밝기, 대비, 채도)
-      ctx.filter = `brightness(${state.filters.brightness}%) contrast(${state.filters.contrast}%) saturate(${state.filters.saturate}%)`;
+      // [FILTER] 캔버스 필터 적용 (미리보기)
+      ctx.filter = getFilterString();
       ctx.drawImage(state.image, r.x, r.y, r.w, r.h);
       ctx.filter = "none"; // [FILTER] 텍스트 등에 영향주지 않도록 필터 리셋
     } catch (e) {
@@ -240,7 +258,10 @@ function downloadImage() {
   if (state.image) {
     const r = computeImageRect(
       state.image.naturalWidth, state.image.naturalHeight, W, H);
+    // [FILTER] 다운로드 이미지에도 미리보기와 동일한 필터 적용
+    octx.filter = getFilterString();
     octx.drawImage(state.image, r.x, r.y, r.w, r.h);
+    octx.filter = "none"; // [FILTER] 텍스트에 필터가 적용되지 않도록 리셋
   } else {
     octx.fillStyle = state.bgColor;
     octx.fillRect(0, 0, W, H);
@@ -611,6 +632,16 @@ function bind() {
   $("filterSaturate").oninput = e => {
     state.filters.saturate = +e.target.value;
     $("filterSaturateVal").textContent = e.target.value + "%";
+    render();
+  };
+
+  // [FILTER] 흑백·세피아 체크박스 이벤트 바인딩
+  $("filterGrayscale").onchange = e => {
+    state.filters.grayscale = e.target.checked;
+    render();
+  };
+  $("filterSepia").onchange = e => {
+    state.filters.sepia = e.target.checked;
     render();
   };
 
